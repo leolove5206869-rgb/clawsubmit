@@ -26,6 +26,15 @@ function FieldInput({ label, value, name, onChange }) {
 
 function ReceiptCard({ receipt }) {
   if (!receipt) return null
+
+  const copyReceipt = async () => {
+    try {
+      await navigator.clipboard.writeText(receipt.expense_id)
+    } catch (_error) {
+      // Best-effort UX helper for demo mode.
+    }
+  }
+
   return (
     <section className="panel receipt-card" data-testid="receipt-card">
       <div className="panel-title">Receipt</div>
@@ -48,6 +57,14 @@ function ReceiptCard({ receipt }) {
           <dd>{receipt.detail_url}</dd>
         </div>
       </dl>
+      <div className="receipt-actions">
+        <button type="button" className="ghost" onClick={copyReceipt}>
+          Copy Receipt ID
+        </button>
+        <a className="receipt-link" href={`${API_BASE}${receipt.detail_url}`} target="_blank" rel="noreferrer">
+          Open Detail Page
+        </a>
+      </div>
     </section>
   )
 }
@@ -109,9 +126,40 @@ export default function App() {
             : hasParsed
               ? 'Parsed'
               : 'Idle'
+  const nextActionLabel =
+    phase === phases.idle || phase === phases.sampled
+      ? 'Next: Use Sample, then Parse the message'
+      : phase === phases.parsed && fields?.summary
+        ? 'Next: Run Agent to start the live execution'
+        : phase === phases.parsed
+          ? 'Next: Apply Suggestion, then Run Agent'
+          : phase === phases.executing
+            ? 'Agent is operating the local sandbox form'
+            : phase === phases.awaiting_confirmation
+              ? 'Next: Confirm Submit to finish the workflow'
+              : phase === phases.submitted
+                ? 'Submission complete. You can reset and rerun the demo.'
+                : 'Fix the current error and rerun the demo.'
 
   const appendLog = (entry) => {
     setLogs((current) => [...current, entry])
+  }
+
+  const resetDemo = () => {
+    eventSourceRef.current?.close()
+    setPhase(phases.idle)
+    setMessage('')
+    setAttachmentPath('')
+    setAttachmentPreview('')
+    setFields(null)
+    setChecklist([])
+    setActiveStep(-1)
+    setLogs([])
+    setSessionId('')
+    setConfirmationMessage('')
+    setReceipt(null)
+    setWriteBackMessages([])
+    setError('')
   }
 
   const handleUseSample = () => {
@@ -263,6 +311,21 @@ export default function App() {
         </div>
       </header>
 
+      <section className={`demo-guide ${isComplete ? 'success-shell' : ''}`}>
+        <div>
+          <div className="demo-guide-label">Demo Guide</div>
+          <strong>{currentStatusLabel}</strong>
+          <p>{nextActionLabel}</p>
+        </div>
+        <div className="demo-guide-actions">
+          {phase !== phases.idle ? (
+            <button type="button" className="ghost" onClick={resetDemo}>
+              Reset Demo
+            </button>
+          ) : null}
+        </div>
+      </section>
+
       <section className="grid">
         <div className="panel column left-panel">
           <div className="panel-title">Task Entry</div>
@@ -371,6 +434,11 @@ export default function App() {
             <div className="sandbox-meta">
               <span className={`sandbox-chip ${receipt ? 'success' : isExecuting ? 'active' : ''}`}>{sandboxLabel}</span>
               <span className="sandbox-url">{receipt ? receipt.detail_url : '/expense/new'}</span>
+            </div>
+            <div className="sandbox-actions">
+              <a className="receipt-link" href={sandboxUrl} target="_blank" rel="noreferrer">
+                Open Sandbox Page
+              </a>
             </div>
             <iframe title="Local Expense Sandbox" src={sandboxUrl} className="sandbox-frame" />
           </section>

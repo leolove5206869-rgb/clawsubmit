@@ -58,6 +58,43 @@ button.ghost {
   padding: 28px;
 }
 
+.demo-guide {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin: 0 0 22px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(10, 17, 30, 0.84);
+  border: 1px solid rgba(85, 102, 136, 0.2);
+}
+
+.demo-guide-label {
+  margin-bottom: 6px;
+  color: #5eead4;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.demo-guide strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+
+.demo-guide p {
+  margin: 0;
+  color: #93a4c5;
+}
+
+.demo-guide-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .hero {
   display: flex;
   justify-content: space-between;
@@ -480,6 +517,28 @@ button.ghost {
   border: 1px solid rgba(85, 102, 136, 0.18);
   border-radius: 18px;
   background: #08111d;
+}
+
+.sandbox-actions,
+.receipt-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.receipt-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  color: #e6eef8;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .confirmation-card p,
