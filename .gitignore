@@ -1,0 +1,11 @@
+node_modules/
+frontend/node_modules/
+backend/.venv/
+backend/.pytest_cache/
+frontend/.vite/
+__pycache__/
+*.pyc
+output/
+test-results/
+playwright-report/
+frontend/dist/
